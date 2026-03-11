@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite" // Change to "postgresql" for production
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  username    String   @unique
+  displayName String
+  password    String   // Hashed password
+  bio         String?
+  avatar      String?  // Profile picture URL
+  banner      String?  // Profile banner image
+  website     String?
+  location    String?
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  posts       Post[]
+  reactions   Reaction[]
+  followers   Follows[] @relation("following")
+  following   Follows[] @relation("follower")
+  notificationsSent     Notification[] @relation("NotificationSender")
+  notificationsReceived Notification[] @relation("NotificationRecipient")
+  
+  @@index([username])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  parentId  String?  // For replies/threads
+  
+  // Denormalized counts for performance
+  likeCount    Int @default(0)
+  replyCount   Int @default(0)
+  repostCount  Int @default(0)
+  
+  createdAt DateTime @default(now())
+  
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  media     Media[]
+  reactions Reaction[]
+  
+  // Self-referential for threading
+  parent    Post?   @relation("PostReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Post[]  @relation("PostReplies")
+  
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([parentId])
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  postId    String
+  type      String   // 'image' or 'video'
+  url       String   // local file path
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now())
+  
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@index([postId])
+}
+
+model Follows {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  type      String   // 'like', 'repost'
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, postId, type])
+  @@index([userId])
+  @@index([postId])
+  @@index([type])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  type        String   // 'like', 'repost', 'reply', 'follow'
+  senderId    String   // User who performed the action
+  recipientId String   // User who receives the notification
+  postId      String?  // Related post (for like, repost, reply)
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  sender      User     @relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+  recipient   User     @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  
+  @@index([recipientId, read])
+  @@index([createdAt])
+}
+
