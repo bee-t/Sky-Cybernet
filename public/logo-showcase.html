@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sky-Cybernet Logo Showcase</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000000;
+      color: #e5e5e5;
+      font-family: ui-monospace, 'Courier New', monospace;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #00ff41;
+      text-align: center;
+      font-size: 42px;
+      letter-spacing: 5px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+    }
+
+    .tagline {
+      text-align: center;
+      color: #00ff41;
+      opacity: 0.7;
+      letter-spacing: 3px;
+      font-size: 14px;
+      margin-bottom: 60px;
+    }
+
+    .section {
+      margin-bottom: 80px;
+      padding: 30px;
+      background: #0a0a0a;
+      border: 2px solid #00ff41;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .section::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: #00ff41;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    }
+
+    h2 {
+      color: #00ff41;
+      font-size: 24px;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+      border-bottom: 1px solid #00ff41;
+      padding-bottom: 10px;
+    }
+
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .logo-card {
+      background: #000000;
+      border: 1px solid #00ff41;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .logo-card:hover {
+      border-color: #00ff41;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .logo-preview {
+      background: #000000;
+      padding: 40px;
+      margin-bottom: 20px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #1a1a1a;
+    }
+
+    .logo-card h3 {
+      color: #00ff41;
+      font-size: 16px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .logo-card p {
+      color: #a3a3a3;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .size-info {
+      color: #00ff41;
+      opacity: 0.5;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    .theme-variants {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .theme-card {
+      flex: 1;
+      background: #000000;
+      border: 1px solid #00ff41;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .theme-card.orange {
+      border-color: #ff6b35;
+    }
+
+    .theme-card.orange h3,
+    .theme-card.orange .size-info {
+      color: #ff6b35;
+    }
+
+    .ascii-box {
+      background: #000000;
+      border: 1px solid #00ff41;
+      padding: 20px;
+      margin: 20px 0;
+      font-size: 12px;
+      overflow-x: auto;
+      white-space: pre;
+      color: #00ff41;
+      line-height: 1.2;
+    }
+
+    .usage-code {
+      background: #0a0a0a;
+      border-left: 3px solid #00ff41;
+      padding: 15px 20px;
+      margin: 15px 0;
+      font-size: 13px;
+      color: #e5e5e5;
+      overflow-x: auto;
+    }
+
+    .color-swatch {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 2px solid #00ff41;
+      margin: 0 10px;
+      vertical-align: middle;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 80px;
+      padding-top: 40px;
+      border-top: 1px solid #00ff41;
+      color: #a3a3a3;
+      font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .theme-variants {
+        flex-direction: column;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SKY-CYBERNET</h1>
+    <div class="tagline">STRATEGIC NETWORK LOGO SHOWCASE</div>
+
+    <!-- Main Logo Variants -->
+    <div class="section">
+      <h2>PRIMARY LOGO VARIANTS</h2>
+      
+      <div class="logo-grid">
+        <div class="logo-card">
+          <div class="logo-preview">
+            <img src="/logo-icon.svg" alt="Icon Logo" width="120" height="120">
+          </div>
+          <h3>ICON - HEXAGON</h3>
+          <p>Hexagonal tactical border with targeting reticle and "SC" monogram. Primary brand icon for apps and favicons.</p>
+          <div class="size-info">100×100px</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-preview">
+            <img src="/logo-full.svg" alt="Full Logo" width="320" height="96">
+          </div>
+          <h3>FULL LOGO</h3>
+          <p>Complete branding with icon, wordmark, and tagline. Use for headers, landing pages, and primary branding.</p>
+          <div class="size-info">400×120px</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-preview">
+            <img src="/logo-wordmark.svg" alt="Wordmark" width="280" height="64">
+          </div>
+          <h3>WORDMARK</h3>
+          <p>Text-only variant with tactical decorations. Ideal for space-constrained layouts and footer branding.</p>
+          <div class="size-info">350×80px</div>
+        </div>
+
+        <div class="logo-card">
+          <div class="logo-preview">
+            <img src="/logo-minimal.svg" alt="Minimal Logo" width="120" height="120">
+          </div>
+          <h3>MINIMAL - NETWORK</h3>
+          <p>Network topology design with central hub and satellite nodes. Alternative icon for technical contexts.</p>
+          <div class="size-info">100×100px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme Variations -->
+    <div class="section">
+      <h2>THEME VARIATIONS</h2>
+      
+      <div class="theme-variants">
+        <div class="theme-card">
+          <h3>TACTICAL GREEN</h3>
+          <img src="/logo-icon.svg" alt="Green Theme" width="150" height="150">
+          <div class="size-info">Primary Theme</div>
+          <div style="margin-top: 15px;">
+            <span class="color-swatch" style="background: #00ff41;"></span>
+            <div style="margin-top: 10px; font-size: 11px;">#00ff41</div>
+          </div>
+        </div>
+
+        <div class="theme-card orange">
+          <h3>TACTICAL ORANGE</h3>
+          <img src="/logo-icon-orange.svg" alt="Orange Theme" width="150" height="150">
+          <div class="size-info">Secondary Theme</div>
+          <div style="margin-top: 15px;">
+            <span class="color-swatch" style="background: #ff6b35; border-color: #ff6b35; box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);"></span>
+            <div style="margin-top: 10px; font-size: 11px;">#ff6b35</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASCII Art -->
+    <div class="section">
+      <h2>ASCII ART VARIANTS</h2>
+      <p style="margin-bottom: 20px; color: #a3a3a3;">For terminal displays, documentation, and retro aesthetic</p>
+      
+      <div class="ascii-box">┏━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  ◢◣  ╔═╗╦╔═  ╦ ╦        ┃
+┃ ◢  ◣ ╚═╗╠╩╗─ ╚╦╝        ┃
+┃ ◥  ◤ ╚═╝╩ ╩   ╩         ┃
+┃  ◥◤                     ┃
+┃ ╔═╗╦ ╦╔╗ ╔═╗╦═╗         ┃
+┃ ║  ╚╦╝╠╩╗║╣ ╠╦╝         ┃
+┃ ╚═╝ ╩ ╚═╝╚═╝╩╚═         ┃
+┃                         ┃
+┃ ╔╗╔╔═╗╔╦╗               ┃
+┃ ║║║║╣  ║                ┃
+┃ ╝╚╝╚═╝ ╩                ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━┛
+TACTICAL OPERATIONS SYSTEM</div>
+
+      <div class="ascii-box">[S][K][Y] - [C][Y][B][E][R]
+═══════════════════════════
+> STRATEGIC NETWORK <</div>
+    </div>
+
+    <!-- Usage Examples -->
+    <div class="section">
+      <h2>USAGE EXAMPLES</h2>
+      
+      <h3 style="color: #00ff41; font-size: 16px; margin: 30px 0 15px;">HTML</h3>
+      <div class="usage-code">&lt;img src="/logo-full.svg" alt="Sky-Cybernet" width="400" /&gt;</div>
+
+      <h3 style="color: #00ff41; font-size: 16px; margin: 30px 0 15px;">React / Next.js</h3>
+      <div class="usage-code">import Image from 'next/image';
+
+&lt;Image 
+  src="/logo-full.svg" 
+  alt="Sky-Cybernet"
+  width={400}
+  height={120}
+/&gt;</div>
+
+      <h3 style="color: #00ff41; font-size: 16px; margin: 30px 0 15px;">CSS Background</h3>
+      <div class="usage-code">.header {
+  background: url('/logo-icon.svg') no-repeat center;
+  background-size: contain;
+}</div>
+
+      <h3 style="color: #00ff41; font-size: 16px; margin: 30px 0 15px;">Markdown</h3>
+      <div class="usage-code">![Sky-Cybernet Logo](/logo-icon.svg)</div>
+    </div>
+
+    <!-- Design Specifications -->
+    <div class="section">
+      <h2>DESIGN SPECIFICATIONS</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div>
+          <h3 style="color: #00ff41; font-size: 14px; margin-bottom: 10px;">Typography</h3>
+          <p style="font-size: 13px; color: #a3a3a3;">
+            Font: Monospace<br>
+            Weight: Bold (700)<br>
+            Tracking: Wide (0.15em)<br>
+            Transform: Uppercase
+          </p>
+        </div>
+        
+        <div>
+          <h3 style="color: #00ff41; font-size: 14px; margin-bottom: 10px;">Colors</h3>
+          <p style="font-size: 13px; color: #a3a3a3;">
+            Primary: #00ff41<br>
+            Secondary: #ff6b35<br>
+            Background: #000000<br>
+            Text: #e5e5e5
+          </p>
+        </div>
+        
+        <div>
+          <h3 style="color: #00ff41; font-size: 14px; margin-bottom: 10px;">Effects</h3>
+          <p style="font-size: 13px; color: #a3a3a3;">
+            Glow: 0 0 10px rgba(0,255,65,0.5)<br>
+            Hover Scale: 1.05-1.1x<br>
+            Transition: 200-300ms ease-out<br>
+            Border Width: 1.5-2px
+          </p>
+        </div>
+        
+        <div>
+          <h3 style="color: #00ff41; font-size: 14px; margin-bottom: 10px;">Minimum Sizes</h3>
+          <p style="font-size: 13px; color: #a3a3a3;">
+            Icon: 32px<br>
+            Full Logo: 120px width<br>
+            Wordmark: 200px width<br>
+            Favicon: 16px
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>SKY-CYBERNET STRATEGIC NETWORK</p>
+      <p style="margin-top: 10px;">Version 1.0.0 • Last Updated: March 12, 2026</p>
+      <p style="margin-top: 15px; font-size: 10px;">All logos and brand assets are optimized for dark backgrounds (#000000 to #1a1a1a)</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Home, Search, Bell, Mail, User, Settings, LogOut, MoreHorizontal } from 'lucide-react';
+import { Home, Search, Bell, Mail, User, Settings, LogOut, MoreHorizontal, Shield } from 'lucide-react';
 import ComposeModal from './ComposeModal';
 import NotificationBell from './NotificationBell';
 
@@ -12,7 +12,7 @@ type User = {
   avatar?: string | null;
 };
 
-export default function Navigation({ currentUser }: { currentUser: User }) {
+export default function Navigation({ currentUser, isAdmin }: { currentUser: User; isAdmin?: boolean }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showComposeModal, setShowComposeModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -176,6 +176,18 @@ export default function Navigation({ currentUser }: { currentUser: User }) {
                 </div>
                 <span className="text-[#00ff41]/90 font-mono text-sm">System Config</span>
               </Link>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-cyan-500/10 transition-all duration-200 border-b border-[#00ff41]/20"
+                  onClick={() => setShowUserMenu(false)}
+                >
+                  <div className="w-6 h-6 border border-cyan-400/40 rounded flex items-center justify-center">
+                    <Shield className="w-3.5 h-3.5 text-cyan-400/70" />
+                  </div>
+                  <span className="text-cyan-400/90 font-mono text-sm">Admin Dashboard</span>
+                </Link>
+              )}
               <button
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-500/10 transition-all duration-200 text-left"
                 onClick={async () => {

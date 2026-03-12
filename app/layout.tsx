@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import { getCurrentUser } from './lib/auth';
+import { isAdmin } from './lib/admin';
 import { SocketProvider } from './lib/SocketProvider';
 import { ThemeProvider } from './lib/ThemeProvider';
 
@@ -23,17 +24,31 @@ export default async function RootLayout({
 }>) {
   // Get current user from session
   const currentUser = await getCurrentUser();
+  const adminAccess = currentUser ? await isAdmin() : false;
+  
+  // Get user's theme preference from database
+  let userTheme: 'green' | 'orange' = 'green';
+  if (currentUser) {
+    const prisma = (await import('./lib/db')).default;
+    const user = await prisma.user.findUnique({
+      where: { id: currentUser.id },
+      select: { theme: true },
+    });
+    if (user?.theme === 'orange' || user?.theme === 'green') {
+      userTheme = user.theme;
+    }
+  }
 
   return (
     <html lang="en">
       <body className="antialiased bg-black font-mono text-[#00ff41]">
-        <ThemeProvider>
+        <ThemeProvider initialTheme={currentUser ? userTheme : undefined}>
           <SocketProvider userId={currentUser?.id}>
             <div className="flex relative z-10">
               {/* Desktop Navigation Sidebar */}
               {currentUser && (
                 <div className="hidden lg:block">
-                  <Navigation currentUser={currentUser} />
+                  <Navigation currentUser={currentUser} isAdmin={adminAccess} />
                 </div>
               )}
 

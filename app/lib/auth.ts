@@ -17,6 +17,7 @@ export async function getCurrentUser() {
       displayName: true,
       avatar: true,
       verified: true,
+      theme: true,
     },
   });
 

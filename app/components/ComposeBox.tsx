@@ -2,18 +2,22 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImageIcon, VideoIcon, X } from 'lucide-react';
+import { ImageIcon, VideoIcon, X, Loader2 } from 'lucide-react';
+import { compressImage, formatFileSize, validateFile } from '../lib/clientCompression';
 
 type MediaPreview = {
   file: File;
   url: string;
   type: 'image' | 'video';
+  originalSize?: number;
+  compressedSize?: number;
 };
 
 export default function ComposeBox({ onSuccess, hideHeader }: { onSuccess?: () => void; hideHeader?: boolean } = {}) {
   const [content, setContent] = useState('');
   const [mediaFiles, setMediaFiles] = useState<MediaPreview[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -26,23 +30,58 @@ export default function ComposeBox({ onSuccess, hideHeader }: { onSuccess?: () =
     }
   }, [content]);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setIsCompressing(true);
     const newPreviews: MediaPreview[] = [];
 
-    files.forEach(file => {
-      if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
+    try {
+      for (const file of files) {
+        // Validate file
+        const validation = validateFile(file, {
+          maxSizeMB: 50, // 50MB max before compression
+          allowedTypes: ['image/*', 'video/*'],
+        });
+
+        if (!validation.valid) {
+          alert(validation.error);
+          continue;
+        }
+
+        const originalSize = file.size;
+        let processedFile = file;
+
+        // Compress images on client-side before upload
+        if (file.type.startsWith('image/')) {
+          try {
+            processedFile = await compressImage(file, {
+              maxWidth: 2048,
+              maxHeight: 2048,
+              quality: 0.85,
+              maxSizeMB: 10,
+            });
+          } catch (error) {
+            console.error('Compression failed, using original:', error);
+          }
+        }
+
         newPreviews.push({
-          file,
-          url: URL.createObjectURL(file),
+          file: processedFile,
+          url: URL.createObjectURL(processedFile),
           type: file.type.startsWith('video/') ? 'video' : 'image',
+          originalSize,
+          compressedSize: processedFile.size,
         });
       }
-    });
 
-    setMediaFiles(prev => [...prev, ...newPreviews].slice(0, 4)); // Max 4 files like X
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      setMediaFiles(prev => [...prev, ...newPreviews].slice(0, 4)); // Max 4 files
+    } finally {
+      setIsCompressing(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 

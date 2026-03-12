@@ -1,0 +1,42 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer tactical border -->
+  <rect
+    x="5"
+    y="5"
+    width="90"
+    height="90"
+    stroke="#00ff41"
+    stroke-width="2"
+    fill="none"
+  />
+  
+  <!-- Corner brackets (tactical UI element) -->
+  <path
+    d="M5 15 L5 5 L15 5 M85 5 L95 5 L95 15 M95 85 L95 95 L85 95 M15 95 L5 95 L5 85"
+    stroke="#00ff41"
+    stroke-width="3"
+    stroke-linecap="square"
+  />
+  
+  <!-- Network node connections -->
+  <circle cx="50" cy="30" r="4" fill="#00ff41" opacity="0.8" />
+  <circle cx="30" cy="50" r="4" fill="#00ff41" opacity="0.8" />
+  <circle cx="70" cy="50" r="4" fill="#00ff41" opacity="0.8" />
+  <circle cx="50" cy="70" r="4" fill="#00ff41" opacity="0.8" />
+  
+  <!-- Center hub -->
+  <circle cx="50" cy="50" r="8" fill="none" stroke="#00ff41" stroke-width="2" />
+  <circle cx="50" cy="50" r="3" fill="#00ff41" />
+  
+  <!-- Connection lines -->
+  <line x1="50" y1="30" x2="50" y2="42" stroke="#00ff41" stroke-width="1" opacity="0.5" />
+  <line x1="30" y1="50" x2="42" y2="50" stroke="#00ff41" stroke-width="1" opacity="0.5" />
+  <line x1="70" y1="50" x2="58" y2="50" stroke="#00ff41" stroke-width="1" opacity="0.5" />
+  <line x1="50" y1="70" x2="50" y2="58" stroke="#00ff41" stroke-width="1" opacity="0.5" />
+  
+  <!-- Scanning effect lines -->
+  <line x1="20" y1="20" x2="35" y2="35" stroke="#00ff41" stroke-width="0.5" opacity="0.3" />
+  <line x1="80" y1="20" x2="65" y2="35" stroke="#00ff41" stroke-width="0.5" opacity="0.3" />
+  <line x1="20" y1="80" x2="35" y2="65" stroke="#00ff41" stroke-width="0.5" opacity="0.3" />
+  <line x1="80" y1="80" x2="65" y2="65" stroke="#00ff41" stroke-width="0.5" opacity="0.3" />
+</svg>

@@ -5,11 +5,18 @@ generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
   previewFeatures = ["driverAdapters"]
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite" // Change to "postgresql" for production
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model User {
@@ -23,7 +30,11 @@ model User {
   website     String?
   location    String?
   verified    Boolean  @default(false)
+  role        UserRole @default(USER)
+  theme       String   @default("green") // User's preferred theme
   createdAt   DateTime @default(now())
+  lastActive  DateTime @default(now())
+  email       String?  @unique // Optional for analytics
   
   posts       Post[]
   reactions   Reaction[]
@@ -33,6 +44,8 @@ model User {
   notificationsReceived Notification[] @relation("NotificationRecipient")
   
   @@index([username])
+  @@index([role])
+  @@index([createdAt])
 }
 
 model Post {

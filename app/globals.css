@@ -77,6 +77,23 @@
     pointer-events: none;
     z-index: 0;
   }
+
+  /* Style select dropdowns */
+  select {
+    color: var(--color-primary);
+  }
+
+  select option {
+    background-color: #0a0a0a;
+    color: #d4d4d4;
+    padding: 8px;
+  }
+
+  select option:hover,
+  select option:checked {
+    background-color: rgba(var(--color-primary-rgb), 0.2);
+    color: var(--color-primary);
+  }
 }
 
 @layer utilities {
