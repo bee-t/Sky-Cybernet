@@ -28,7 +28,10 @@ A production-ready social platform with a military-tactical cyber aesthetic, bui
 
 ## 📚 Documentation
 
-- **[SETUP.md](SETUP.md)** - Local development setup and configuration
+- **[SETUP.md](SETUP.md)** - Complete setup guide for all platforms
+- **[FEDORA-QUICKSTART.md](FEDORA-QUICKSTART.md)** - Quick reference for Fedora Linux
+- **[PODMAN.md](PODMAN.md)** - Podman setup and rootless container guide
+- **[FIREWALL.md](FIREWALL.md)** - Strict firewall and security hardening guide
 - **[PRODUCTION.md](PRODUCTION.md)** - Production deployment guide
 - **[ADMIN.md](ADMIN.md)** - Admin dashboard guide and user management
 - **[BRANDING.md](BRANDING.md)** - Brand identity, logo usage, and design guidelines
@@ -87,6 +90,33 @@ A production-ready social platform with a military-tactical cyber aesthetic, bui
 
 See [PRODUCTION.md](PRODUCTION.md) for comprehensive deployment instructions.
 
+**Automated deployment scripts:**
+
+Linux/macOS:
+```bash
+# Make script executable (first time only)
+chmod +x deploy.sh
+
+# Run deployment
+npm run deploy:linux
+# or directly: ./deploy.sh
+```
+
+Windows (PowerShell):
+```powershell
+# Run deployment
+npm run deploy
+```
+
+The deployment script will:
+- ✅ Check Docker is running
+- ✅ Start PostgreSQL and Redis containers
+- ✅ Wait for services to be healthy
+- ✅ Generate Prisma Client
+- ✅ Run database migrations
+- ✅ Build the application
+- ✅ Display next steps
+
 **Quick Docker deployment:**
 ```bash
 # Build and start all services
@@ -119,6 +149,48 @@ curl http://localhost:3000/api/health
 - Docker & Docker Compose
 - Nginx (optional reverse proxy)
 - GitHub Actions (CI/CD)
+
+## 🖥️ Platform Support
+
+### Fully Supported Platforms
+
+- ✅ **Fedora Linux** (40+) - Primary development platform
+- ✅ **Ubuntu/Debian** (20.04+)
+- ✅ **Windows 10/11** (with Docker Desktop)
+- ✅ **macOS** (Intel & Apple Silicon)
+- ✅ **RHEL/CentOS Stream** (9+)
+- ✅ **Arch Linux** (rolling)
+
+### Platform-Specific Notes
+
+**Fedora/RHEL:**
+- SELinux configured by default
+- Modern Docker Compose V2 plugin support
+- **Podman support** (rootless containers preferred)
+- Firewall rules included in setup guide
+
+**Windows:**
+- PowerShell deployment script (`deploy.ps1`)
+- Docker Desktop required
+- WSL2 recommended for best performance
+
+**Linux:**
+- Bash deployment script (`deploy.sh`)
+- **Auto-detects Podman or Docker**
+- Native Docker/Podman performance
+- Systemd service examples included
+
+See [SETUP.md](SETUP.md) for platform-specific installation instructions.
+
+### Security Features
+
+- ✅ **Rootless containers** with Podman support
+- ✅ **Localhost-only binding** for strict firewall environments
+- ✅ **SELinux integration** with proper context labels
+- ✅ **Minimal container capabilities** (capability dropping)
+- ✅ **Resource limits** via Docker/Podman
+- ✅ **Nginx reverse proxy** with rate limiting
+- ✅ See [FIREWALL.md](FIREWALL.md) for strict security configurations
 
 ## 📦 Project Structure
 

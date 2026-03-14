@@ -1,0 +1,47 @@
+# Git Attributes
+# Ensures consistent line endings across platforms
+
+# Auto-detect text files and normalize to LF
+* text=auto
+
+# Shell scripts must have LF line endings (Unix)
+*.sh text eol=lf
+
+# PowerShell scripts should have CRLF (Windows)
+*.ps1 text eol=crlf
+
+# Windows batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Source code files - LF
+*.js text eol=lf
+*.ts text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Prisma schema files
+*.prisma text eol=lf
+
+# Dockerfile must use LF
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.node binary

@@ -1,0 +1,225 @@
+# Docker Compose Configuration for Strict Security Environments
+# This configuration binds all services to localhost (127.0.0.1) only
+# Use with Nginx reverse proxy for external access
+# Compatible with both Docker and Podman
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: skycybernet_postgres
+    # Podman-compatible restart policy
+    restart: on-failure:5
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-skycybernet}
+    # SECURITY: Bind to localhost ONLY - not accessible from external network
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # :Z suffix for SELinux automatic labeling (Fedora/RHEL)
+      - postgres_data:/var/lib/postgresql/data:Z
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=200"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "effective_cache_size=1GB"
+      - "-c"
+      - "maintenance_work_mem=64MB"
+      - "-c"
+      - "checkpoint_completion_target=0.9"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "default_statistics_target=100"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    # Security hardening
+    security_opt:
+      - no-new-privileges:true
+      - label=type:container_runtime_t  # SELinux label
+    # Minimal capabilities
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - DAC_OVERRIDE
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  redis:
+    image: redis:7-alpine
+    container_name: skycybernet_redis
+    restart: on-failure:5
+    # SECURITY: Bind to localhost ONLY
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data:Z
+    command:
+      - "redis-server"
+      - "--bind"
+      - "0.0.0.0"  # Bind inside container (isolated by Docker network)
+      - "--maxmemory"
+      - "512mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+      - "--save"
+      - "900 1"
+      - "--save"
+      - "300 10"
+      - "--appendonly"
+      - "yes"
+      - "--requirepass"
+      - "${REDIS_PASSWORD:-}"  # Set password in .env for production
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    security_opt:
+      - no-new-privileges:true
+      - label=type:container_runtime_t
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETUID
+      - SETGID
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skycybernet_app
+    restart: on-failure:5
+    # SECURITY: Bind to localhost ONLY - access via Nginx reverse proxy
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      HOSTNAME: "0.0.0.0"  # Listen on all interfaces inside container
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-skycybernet}?schema=public&connection_limit=10&pool_timeout=20
+      DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-skycybernet}?schema=public
+      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+    volumes:
+      - uploads_data:/app/public/uploads:Z
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - app-network
+    security_opt:
+      - no-new-privileges:true
+      - label=type:container_runtime_t
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    # Read-only root filesystem (uncomment if app supports it)
+    # read_only: true
+    # tmpfs:
+    #   - /tmp
+    #   - /app/.next/cache
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Nginx reverse proxy (optional but recommended for production)
+  # Uncomment to enable
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: skycybernet_nginx
+  #   restart: on-failure:5
+  #   # These are the ONLY ports exposed externally
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro,Z
+  #     - ./ssl:/etc/nginx/ssl:ro,Z
+  #   depends_on:
+  #     - app
+  #   networks:
+  #     - app-network
+  #   security_opt:
+  #     - no-new-privileges:true
+  #     - label=type:container_runtime_t
+  #   cap_drop:
+  #     - ALL
+  #   cap_add:
+  #     - NET_BIND_SERVICE
+  #     - CHOWN
+  #     - SETUID
+  #     - SETGID
+  #   profiles:
+  #     - production
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
+    # Set internal=true for complete isolation (no internet access from containers)
+    # internal: true
+    # Custom subnet for better control
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+    driver_opts:
+      # Disable inter-container communication if not needed
+      com.docker.network.bridge.enable_icc: "true"
+      # Enable IP masquerading
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      # Custom bridge name
+      com.docker.network.bridge.name: "skycybernet-br0"

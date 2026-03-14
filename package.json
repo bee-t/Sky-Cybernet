@@ -24,6 +24,7 @@
     "docker:clean": "docker-compose down -v",
     "health": "curl -f http://localhost:3000/api/health || exit 1",
     "deploy": "pwsh -File deploy.ps1",
+    "deploy:linux": "bash deploy.sh",
     "postinstall": "prisma generate"
   },
   "prisma": {
